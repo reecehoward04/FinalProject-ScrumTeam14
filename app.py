@@ -1,3 +1,10 @@
+import sqlite3
+from flask import Flask, render_template, request, url_for, flash, redirect, abort 
+
+#make flask app
+app = Flask(__name__)
+app.config['DEBUG'] = True
+
 #get sql connection
 def get_db_connection():
     #create connection
@@ -9,3 +16,10 @@ def get_db_connection():
 
     #return connection
     return conn
+
+#use app.route() to create index.html view function
+@app.route('/')
+def index():
+    return "<h1>IT-4320 Trip Reservation System</h1>"
+
+app.run()
