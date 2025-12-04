@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+<form method="POST">
+    <label>Username:</label>
+    <input type="text" name="username" required>
+
+    <label>Password:</label>
+    <input type="password" name="password" required>
+
+    <button type="submit">Login</button>
+</form>
+
+{% for message in get_flashed_messages() %}
+    <div class="alert">{{ message }}</div>
+{% endfor %}

@@ -20,6 +20,29 @@ def get_db_connection():
 #use app.route() to create index.html view function
 @app.route('/')
 def index():
-    return "<h1>IT-4320 Trip Reservation System</h1>"
+
+    #return index.html
+    return render_template('index.html')
+
+@app.route('/admin/', methods=('GET', 'POST'))
+def admin():
+
+    #determine get or post request
+    if request.method== 'POST':
+
+        username = request.form['username']
+        password = request.form['password']
+
+        #check db for admin
+        conn = get_db_connection()
+        admin = conn.execute("SELECT * FROM admins WHERE username = ? AND password = ?", (username, password)).fetchone()
+        conn.close()
+
+        #display error if username or password are incorrect based on db
+        if admin is None:
+            flash("Invalid username or password")
+            return redirect(url_for('admin'))
+        
+    return render_template('admin.html')
 
 app.run()
