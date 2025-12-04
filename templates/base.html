@@ -7,7 +7,12 @@
         .container {
             padding: 10px;
             margin: 5px;
-            background-color: #f3f3f3
+            background-color: #f3f3f3;
+            justify-content: center;
+            text-align: center;
+            border: 1px solid black;
+            margin-left: 110px;
+            margin-right: 110px;
         }
 
         .page {
@@ -29,11 +34,11 @@
         }
     </style>
 </head>
-<body>
+<body class="page">
     <nav>
         <a href="{{ url_for('index') }}">Home</a>
         <a href="{{ url_for('admin') }}">Admin</a>
-        <a href="{{ url_for('index') }}">Reservations</a>
+        <a href="{{ url_for('reservations') }}">Reservations</a>
     </nav>
     <hr>
     <div class="content">
