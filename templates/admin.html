@@ -1,15 +1,59 @@
 {% extends 'base.html' %}
 
-<form method="POST">
-    <label>Username:</label>
-    <input type="text" name="username" required>
+{% block content %}
+<div class="container">
+    <h1>Admin Login</h1>
 
-    <label>Password:</label>
-    <input type="password" name="password" required>
+    <form method="POST">
+        <label>Username:</label>
+        <input type="text" name="username" required>
 
-    <button type="submit">Login</button>
-</form>
+        <label>Password:</label>
+        <input type="password" name="password" required>
 
-{% for message in get_flashed_messages() %}
-    <div class="alert">{{ message }}</div>
-{% endfor %}
+        <button type="submit">Login</button>
+    </form>
+
+    {% for message in get_flashed_messages() %}
+        <div class="alert">{{ message }}</div>
+    {% endfor %}
+
+    {% if total_sales is defined %}
+        <hr>
+        <h2>Admin Dashboard</h2>
+
+        <h3>Total Sales: ${{ total_sales }}</h3>
+
+        <h3>Seating Chart (X = Reserved, O = Available)</h3>
+        <table border="1" cellpadding="4" cellspacing="0">
+            {% for row in chart %}
+                <tr>
+                {% for seat in row %}
+                    <td style="text-align:center; width:30px;">{{ seat }}</td>
+                {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+
+        <h3>Reservations</h3>
+        <table border="1" cellpadding="4" cellspacing="0">
+            <tr>
+                <th>ID</th>
+                <th>Passenger</th>
+                <th>Row</th>
+                <th>Seat</th>
+                <th>Reservation Code</th>
+            </tr>
+            {% for r in reservations %}
+            <tr>
+                <td>{{ r["id"] }}</td>
+                <td>{{ r["passengerName"] }}</td>
+                <td>{{ r["seatRow"] + 1 }}</td>
+                <td>{{ r["seatColumn"] + 1 }}</td>
+                <td>{{ r["eTicketNumber"] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</div>
+{% endblock %}
