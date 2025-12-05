@@ -22,6 +22,25 @@ def get_db_connection():
     #return connection
     return conn
 
+def get_seating_chart():
+    conn = get_db_connection()
+
+    #load reservations and build seating chart
+    existing = conn.execute('SELECT seatRow, seatColumn FROM reservations').fetchall()
+
+    #seating chart
+    Rows = 12
+    Columns = 4
+
+    chart = [["O" for _ in range(Columns)] for _ in range(Rows)]
+
+    for seat in existing:
+        r = seat["seatRow"]
+        c = seat["seatColumn"]
+        chart[r][c] = "X"
+
+    return chart
+
 #get the reservation code based on the pattern
 def get_reservation_code(firstName):
     pattern = "INFOTC4320"
@@ -42,6 +61,7 @@ def get_reservation_code(firstName):
 #use app.route() to create index.html view function
 @app.route('/')
 def index():
+    
     return render_template('index.html')
 
 @app.route('/admin/', methods=['GET', 'POST'])
@@ -96,21 +116,9 @@ def admin():
 @app.route('/reservations/', methods=['GET', 'POST'])
 def reservations():
 
+    chart = get_seating_chart()
+
     conn = get_db_connection()
-
-    #load reservations and build seating chart
-    existing = conn.execute('SELECT seatRow, seatColumn FROM reservations').fetchall()
-
-    #seating chart
-    Rows = 12
-    Columns = 4
-
-    chart = [["O" for _ in range(Columns)] for _ in range(Rows)]
-
-    for seat in existing:
-        r = seat["seatRow"]
-        c = seat["seatColumn"]
-        chart[r][c] = "X"
 
     successMessage = None
 
