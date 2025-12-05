@@ -4,9 +4,10 @@
 <div class="page">
     <div class="container">
         <h1>IT-4320 Trip Reservation System</h1>
+        <div style="text-align: left;">
         <p>Welcome to the IT-4320 Trip Reservation System. Use the select box to choose whether to make a reservation or log in as an administrator.</p>
 
-        <label for="menu">Choose Menu Option:</label><br><br>
+        <label for="menu">Choose Menu Option:</label><br>
         <select id="menu">
             <option value="">Choose an option</option>
             <option value="/admin/">Admin Login</option>
@@ -14,6 +15,7 @@
         </select>
         <br><br>
         <button type="button" onclick="handleMenuSelection()">Submit</button>
+        </div>
     </div>
 </div>
 
@@ -23,5 +25,7 @@
         if (choice) {
             window.location.href = choice; 
         }
+    }
 </script>
+
 {% endblock %}
