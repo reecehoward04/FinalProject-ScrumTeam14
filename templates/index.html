@@ -3,32 +3,25 @@
 {% block content %}
 <div class="page">
     <div class="container">
-        <h1>{% block title %} IT-4320 Trip Reservation System {% endblock %}</h1>
-        <p> Welcome to the IT-4320 reservation system. Use the select box to choose whether to make a reservation or log in as an administratior.</p>
-            <form onsubmit="return handleMenuSelection();">
-            <label for="menu">Choose Menu Option:</label><br>
-            <select id="menu" name="menu">
-                <option value="">Choose an option</option>
-                <option value="admin">Admin Login</option>
-                <option value="reserve">Reserve a Seat</option>
-            </select>
-            <button type="submit">Submit</button>
-        </form>
+        <h1>IT-4320 Trip Reservation System</h1>
+        <p>Welcome to the IT-4320 Trip Reservation System. Use the select box to choose whether to make a reservation or log in as an administrator.</p>
+
+        <label for="menu">Choose Menu Option:</label><br><br>
+        <select id="menu">
+            <option value="">Choose an option</option>
+            <option value="/admin/">Admin Login</option>
+            <option value="/reservations/">Reserve a Seat</option>
+        </select>
+        <br><br>
+        <button type="button" onclick="handleMenuSelection()">Submit</button>
     </div>
 </div>
 
 <script>
     function handleMenuSelection() {
         const choice = document.getElementById('menu').value;
-
-        if (choice === 'reserve') {
-            window.location.href = "{{ url_for('reservations') }}";
-        } else if (choice === 'admin') {
-            window.location.href = "{{ url_for('admin') }}";
+        if (choice) {
+            window.location.href = choice; 
         }
-
-        //prevent normal form submission since we handle navigation ourselves
-        return false;
-    }
 </script>
 {% endblock %}

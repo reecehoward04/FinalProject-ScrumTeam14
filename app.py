@@ -61,7 +61,6 @@ def get_reservation_code(firstName):
 #use app.route() to create index.html view function
 @app.route('/')
 def index():
-    
     return render_template('index.html')
 
 @app.route('/admin/', methods=['GET', 'POST'])
