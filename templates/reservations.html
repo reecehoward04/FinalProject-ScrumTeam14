@@ -13,15 +13,11 @@
     <h3>Seating Chart</h3>
     <p style="text-align: left;">X = Reserved Seat : O = Avalible Seat</p>
 
-    <table border="1" cellpadding="8">
+    <div class="card">
         {% for row in chart %}
-        <tr>
-            {% for seat in row %}
-                <td style="text-align:center; width:30px;">{{ seat }}</td>
-            {% endfor %}
-        </tr>
+            <div>{{ row }}</div>
         {% endfor %}
-    </table>
+    </div>
 
     <br><br>
 
