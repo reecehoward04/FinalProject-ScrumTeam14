@@ -120,4 +120,4 @@ def reservations():
 
     return render_template('reservations.html', chart=chart, successMessage=successMessage)
 
-app.run()
+app.run(host="0.0.0.0", port=5000, debug=True)
