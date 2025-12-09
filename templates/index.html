@@ -3,27 +3,29 @@
 {% block content %}
 <div class="page">
     <div class="container">
-    <h1>{% block title %} IT-4320 Trip Reservation System {% endblock %}</h1>
-    <p>Welcome to the IT-4320 reservation system. Use the select box to choose whether to make a reservation or log in as an administratior. </p>
-    <form method="get">
+        <h1>IT-4320 Trip Reservation System</h1>
+        <div style="text-align: left;">
+        <p>Welcome to the IT-4320 Trip Reservation System. Use the select box to choose whether to make a reservation or log in as an administrator.</p>
+
         <label for="menu">Choose Menu Option:</label><br>
-        <select id="menu" name="menu">
+        <select id="menu">
             <option value="">Choose an option</option>
-            <option value="admin">Admin Login</option>
-            <option value="reserve">Reserve a Seat</option>
+            <option value="/admin/">Admin Login</option>
+            <option value="/reservations/">Reserve a Seat</option>
         </select>
-        <button onsubmit="handleMenuSelection(this.value)">Submit</button>
-    </form>
+        <br><br>
+        <button type="button" onclick="handleMenuSelection()">Submit</button>
+        </div>
     </div>
 </div>
 
 <script>
-    function handleMenuSelection(choice){
-        if (choice === 'reserve'){
-            return redirect(url_for('reservations'));
-        }else if (choice === 'admin'){
-            return redirect(url_for('admin'));
+    function handleMenuSelection() {
+        const choice = document.getElementById('menu').value;
+        if (choice) {
+            window.location.href = choice; 
         }
     }
 </script>
+
 {% endblock %}

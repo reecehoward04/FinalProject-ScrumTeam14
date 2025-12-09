@@ -6,6 +6,10 @@ app = Flask(__name__)
 app.config['DEBUG'] = True
 app.secret_key = "secret"
 
+def get_cost_matrix():
+    cost_matrix = [[100, 75, 50, 100] for row in range(12)]
+    return cost_matrix
+
 #get sql connection
 def get_db_connection():
     #create connection
@@ -17,6 +21,25 @@ def get_db_connection():
 
     #return connection
     return conn
+
+def get_seating_chart():
+    conn = get_db_connection()
+
+    #load reservations and build seating chart
+    existing = conn.execute('SELECT seatRow, seatColumn FROM reservations').fetchall()
+
+    #seating chart
+    Rows = 12
+    Columns = 4
+
+    chart = [["O" for _ in range(Columns)] for _ in range(Rows)]
+
+    for seat in existing:
+        r = seat["seatRow"]
+        c = seat["seatColumn"]
+        chart[r][c] = "X"
+
+    return chart
 
 #get the reservation code based on the pattern
 def get_reservation_code(firstName):
@@ -42,43 +65,59 @@ def index():
 
 @app.route('/admin/', methods=['GET', 'POST'])
 def admin():
-
-    #determine get or post request
     if request.method== 'POST':
-
         username = request.form['username']
         password = request.form['password']
 
         #check db for admin
         conn = get_db_connection()
         admin = conn.execute("SELECT * FROM admins WHERE username = ? AND password = ?", (username, password)).fetchone()
-        conn.close()
 
         #display error if username or password are incorrect based on db
         if admin is None:
+            conn.close()
             flash("Invalid username or password")
             return redirect(url_for('admin'))
-        
+
+        #get existing reserved seats and full reservation list
+        existing = conn.execute('SELECT seatRow, seatColumn FROM reservations').fetchall()
+        reservations = conn.execute('SELECT * FROM reservations').fetchall()
+        conn.close()
+
+        #build seating chart
+        Rows = 12
+        Columns = 4
+        chart = [["O" for c in range(Columns)] for r in range(Rows)]
+
+        for seat in existing:
+            r = int(seat["seatRow"])
+            c = int(seat["seatColumn"])
+            chart[r][c] = "X"
+
+        #calculate total sales
+        cost_matrix = get_cost_matrix()
+        total_sales = 0
+        for seat in existing:
+            r = int(seat["seatRow"])
+            c = int(seat["seatColumn"])
+            total_sales += cost_matrix[r][c]
+
+        return render_template(
+            'admin.html',
+            chart=chart,
+            reservations=reservations,
+            total_sales=total_sales
+        )
+
+    #GET request – just show the login form
     return render_template('admin.html')
 
 @app.route('/reservations/', methods=['GET', 'POST'])
 def reservations():
 
+    chart = get_seating_chart()
+
     conn = get_db_connection()
-
-    #load reservations and build seating chart
-    existing = conn.execute('SELECT seatRow, seatColumn FROM reservations').fetchall()
-
-    #seating chart
-    Rows = 12
-    Columns = 4
-
-    chart = [["O" for _ in range(Columns)] for _ in range(Rows)]
-
-    for seat in existing:
-        r = seat["seatRow"]
-        c = seat["seatColumn"]
-        chart[r][c] = "X"
 
     successMessage = None
 
