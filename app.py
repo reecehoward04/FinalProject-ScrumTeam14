@@ -58,6 +58,17 @@ def get_reservation_code(firstName):
     
     return code
 
+#funtion to retrieve a post from the database
+def get_reservation(reservation_id):
+    conn = get_db_connection()
+    reservation = conn.execute('SELECT * FROM reservations WHERE id = ?', (reservation_id,)).fetchone()
+    conn.close()
+
+    if reservation is None:
+        abort(404)
+    return reservation
+
+
 #use app.route() to create index.html view function
 @app.route('/')
 def index():
@@ -149,7 +160,7 @@ def reservations():
         
         reservationCode = get_reservation_code(firstName)
         
-        conn.execute('INSERT INTO reservations (passengerName, seatRow, seatColumn, eTicketNumber) VALUES (?,?,?,?)', (firstName +" "+lastName, seatRow, seatColumn, reservationCode))
+        conn.execute('INSERT INTO reservations (passengerName, seatRow, seatColumn, eTicketNumber) VALUES (?,?,?,?)', (firstName, seatRow, seatColumn, reservationCode))
         conn.commit()
 
         successMessage = (f"Congradulations {firstName}! Row: {rows+1}, Seat: {columns+1} is now reserved for you. Enjoy your trip!"
@@ -158,5 +169,23 @@ def reservations():
         conn.close()
 
     return render_template('reservations.html', chart=chart, successMessage=successMessage)
+
+@app.route('/<int:id>/delete', methods=('POST',))
+def delete(id):
+    #get the post
+    reservation = get_reservation(id)
+
+    #connect to the database
+    conn = get_db_connection()
+
+    #execute a delete query
+    conn.execute('DELETE FROM reservations WHERE id = ?', (id,))
+
+    #commit and close connection
+    conn.commit()
+    conn.close()
+
+    flash(f"Success: The reservation for {reservation['passengerName']} was successfully deleted.")
+    return redirect(url_for('admin'))
 
 app.run(host="0.0.0.0", port=5000, debug=True)
